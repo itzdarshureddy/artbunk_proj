@@ -1,0 +1,44 @@
+
+<html>
+<head>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="babynames.css">
+<script type="text/javascript" src="babynames.js"></script>
+</head>
+<body>
+<div class="container">
+      <h2>Popular Baby Names</h2>
+        <input type="text" id="inputYear" class="form-control" placeholder="Enter Year" required autofocus>
+        <button id="getNamesBtn">Get Names</button>
+
+</div> 
+
+<table cellpadding="2" cellspacing="0" width="99%"> 
+  <caption><b>Top Five Names for Births in <span id="dispYear"></span> </b></caption>
+   <tr>
+    <td></td>
+    <th colspan="5" bgcolor="pink">Females</th>
+    <th colspan="5" bgcolor="#99ccff">Males</th>
+   </tr>
+   <tr align="center">
+    <th scope="col">Year</th>
+    <th scope="col" width="9.3%" abbr="first female">Rank 1</th>
+    <th scope="col" width="9.3%" abbr="second female">Rank 2</th>
+    <th scope="col" width="9.3%" abbr="third female">Rank 3</th>
+    <th scope="col" width="9.3%" abbr="fourth female">Rank 4</th>
+    <th scope="col" width="9.3%" abbr="fifth female">Rank 5</th>
+    <th scope="col" width="9.3%" abbr="first male">Rank 1</th>
+    <th scope="col" width="9.3%" abbr="second male">Rank 2</th>
+    <th scope="col" width="9.3%" abbr="third male">Rank 3</th>
+    <th scope="col" width="9.3%" abbr="fourth male">Rank 4</th>
+    <th scope="col" width="9.3%" abbr="fifth male">Rank 5</th>
+   </tr>
+   <tr>
+    <td align="center" id="cy"></td>
+    <td id="f1"></td> <td id="f2"></td> <td id="f3"></td> <td id="f4"></td> <td id="f5"></td> <td id="m1"></td> <td id="m2"></td> <td id="m3"></td> <td id="m4"></td> <td id="m5"></td>
+  </tr>
+</table>
+<p id="error">Error!! Please enter a year between 2005 and 2013 and try again </p>
+
+</body>
+</html>

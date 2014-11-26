@@ -1,0 +1,12 @@
+  body {
+    padding-bottom: 40px;
+    background-color: #eee;
+  }
+  .navbar{
+    background-color: #00b2a9;
+    font-weight: bold;
+  }
+
+  .logo{
+    font-size: 30px;
+  }

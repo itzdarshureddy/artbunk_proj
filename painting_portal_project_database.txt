@@ -1,0 +1,66 @@
+create database painting_portal;
+use painting_portal;
+
+create table user(
+user_id int not null AUTO_INCREMENT,
+password varchar(50),
+fname varchar(50),
+lname varchar(50),
+email varchar(50) unique,
+address varchar(100),
+primary key(user_id)
+);
+
+create table category(
+category_id int not null AUTO_INCREMENT,
+category_name varchar(50),
+description varchar(50),
+primary key(category_id)
+);
+
+create table cart(
+cart_id int not null,
+user_id int not null, 
+is_processed varchar(50),
+primary key(cart_id)
+);
+
+create table painting(
+painting_id int not null AUTO_INCREMENT,
+painting_name varchar(50),
+category_id int not null,
+artist_name varchar(50),
+seller_id int not null,
+dimenstions varchar(50),
+price int,
+painting longblob not null,
+painting_status varchar(50),
+painting_year int,
+description varchar(50),
+date_uploaded date,
+primary key(painting_id),
+foreign key(category_id) references category(category_id),
+foreign key(seller_id) references user(user_id)
+);
+
+create table checkout(
+user_id int not null ,
+cart_id int not null,
+total int,
+checkout_date date,
+delivery_address varchar(50),
+phone_no int(10),
+primary key(user_id,cart_id),
+foreign key(cart_id) references cart(cart_id),
+foreign key(user_id) references user(user_id)
+);
+
+
+create table cart_list(
+cart_id int not null,
+painting_id int not null,
+add_date date,
+primary key(painting_id,cart_id),
+foreign key(cart_id) references cart(cart_id),
+foreign key(painting_id) references painting(painting_id)
+);
