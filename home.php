@@ -29,7 +29,7 @@ if(!$_SESSION['userId']){
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand logo" href="#">ArtBunk</a>
+        <a class="navbar-brand logo" href="home.php">ArtBunk</a>
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
@@ -46,7 +46,7 @@ if(!$_SESSION['userId']){
         </ul>
         <form class="navbar-form navbar-left" role="search">
           <div class="form-group">
-            <input type="text" ng-model="searchName" class="form-control" placeholder="Search">
+            <input type="text" ng-model="searchName" class="form-control" placeholder="Enter Painting Name">
           </div>
           <button type="submit" ng-click="getImagesByName()" class="btn btn-default">Search</button>
         </form>
@@ -60,17 +60,33 @@ if(!$_SESSION['userId']){
     </div><!-- /.container-fluid -->
   </nav>
   <div class="container">
-    <div class="row" >
+    <div class="row" ng-show="!enlargeOnePainting">
 
                 <div ng-repeat="painting in paintingsArray" class="col-md-3 thumbnail img-responsive">
-                    <a href="#" title="Image 1">
+                    <a ng-click="selectPainting(painting)" title="Image 1">
                         <img ng-src="showimage.php?id={{painting.painting_id}}"  /></a>
                         <div class="details">
                         <h4 class="title">{{painting.painting_name}}</h4>
-                        <span class="price">{{painting.price}} $</span>
+                        Price: <span class="price">{{painting.price}} $</span>
                         <span class="banner">{{painting.painting_status}}</span>
                       </div>
                 </div>
+    </div>
+    <div class="row" ng-show="enlargeOnePainting">
+        <div class="col-md-12 thumbnail img-responsive">
+          <img class="col-md-6"  ng-src="showimage.php?id={{selectedPainting.painting_id}}"  />
+          <div class="col-md-6 details">
+            <h3>{{selectedPainting.painting_name}}</h3>
+            <p>{{selectedPainting.description}}</p>
+            <p><b>Painting Category: </b>{{selectedPainting.category_name}}</p>
+            <p><b>Painting Year: </b>{{selectedPainting.painting_year}}</p>
+            <p><b>Artist: </b>{{selectedPainting.artist_name}}</p>
+            <p><b>Dimensions: </b>{{selectedPainting.dimensions}} inches</p>
+            <p><b>Status: </b><span class="banner"> {{selectedPainting.painting_status}}</sapn></p>
+            <button class="btn btn-primary" ng-disabled="selectedPainting.painting_status!='AVAILABLE'"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+          </div>
+        </div>
+
     </div>
   </div> 
 

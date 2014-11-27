@@ -45,6 +45,20 @@ var app=angular.module('homeDashboard',['ngResource','ngRoute']);
   	});
   	}
 
+  	$scope.selectedPainting = {};
+
+  	$scope.enlargeOnePainting = false;
+
+  	$scope.selectPainting = function(painting){
+  		$scope.selectedPainting = painting;
+  		$scope.categoriesArray.forEach(function(category){
+  			if(category.category_id==painting.category_id){
+  				$scope.selectedPainting.category_name = category.category_name;
+  			}
+  		});
+  		$scope.enlargeOnePainting = true;
+  	}
+
 
   });
 })();
