@@ -19,7 +19,7 @@ $price =$_POST['price'];
 $year =$_POST['year'];
 $width =$_POST['width'];
 $height =$_POST['height'];
-$categoryId = 1;
+$categoryId = $_POST["category"];
 $sellerId = $_SESSION['userId'];
 $status = "AVAILABLE";
 $fileData = file_get_contents($_FILES['image']['tmp_name']);
@@ -40,12 +40,5 @@ $con=mysqli_connect("localhost","root","intuit01","painting_portal");
 
 	echo "error while converting to json".$e->getMessage();
 }
-		echo $retval;
-// $fp     = fopen($tmpName, 'r');
-// $content = fread($fp, filesize($tmpName));
-// $content = addslashes($content);
-// fclose($fp);
-
-// echo $content;
-
+		header("Location: home.php");
 ?>

@@ -18,7 +18,7 @@ if(!$_SESSION['userId']){
 
   <link rel="stylesheet" href="home.css">
 </head>
-<body>
+<body ng-controller="paintingsController">
   <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
@@ -39,33 +39,16 @@ if(!$_SESSION['userId']){
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-paint-brush"></i>  Categories <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
-              <!-- <li><a href="#">Action</a></li> -->
-              <?php 
-              $con=mysqli_connect("localhost","root","intuit01","painting_portal"); 
-              if (mysqli_connect_errno()) {
-                printf("Connect failed: %s\n", mysqli_connect_error());
-                exit();
-              }
-              $query = "select category_name from category";
-
-              $results =  mysqli_query($con,$query);
-              $num_categories =  mysqli_num_rows($results);
-              if($num_categories > 0){
-               while($data = mysqli_fetch_array($results,MYSQL_ASSOC)){
-                echo "<li><a>".$data["category_name"]."</a></li>";
-                }; 
-
-              }
-
-              ?>
+              <li ng-repeat="category in categoriesArray" ng-click="getImagesBycategory(category.category_id)"><a href="#" >{{category.category_name}}</a></li>
+              
             </ul>
           </li>
         </ul>
         <form class="navbar-form navbar-left" role="search">
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="Search">
+            <input type="text" ng-model="searchName" class="form-control" placeholder="Search">
           </div>
-          <button type="submit" class="btn btn-default">Submit</button>
+          <button type="submit" ng-click="getImagesByName()" class="btn btn-default">Search</button>
         </form>
         <ul class="nav navbar-nav navbar-right">
           <li><a><i class="fa fa-shopping-cart"></i> Cart</a></li>
@@ -77,14 +60,14 @@ if(!$_SESSION['userId']){
     </div><!-- /.container-fluid -->
   </nav>
   <div class="container">
-    <div class="row" ng-controller="paintingsController">
+    <div class="row" >
 
                 <div ng-repeat="painting in paintingsArray" class="col-md-3 thumbnail img-responsive">
                     <a href="#" title="Image 1">
-                        <img src="showimage.php?id={{painting.painting_id}}"  /></a>
+                        <img ng-src="showimage.php?id={{painting.painting_id}}"  /></a>
                         <div class="details">
                         <h4 class="title">{{painting.painting_name}}</h4>
-                        <span class="price">{{painting.price}}$</span>
+                        <span class="price">{{painting.price}} $</span>
                         <span class="banner">{{painting.painting_status}}</span>
                       </div>
                 </div>
@@ -115,7 +98,9 @@ if(!$_SESSION['userId']){
             </div>
             <div class="form-group">
               <label for="painting-category" class="control-label">Category:</label>
-              <input type="text" class="form-control" name="category" id="painting-category" required>
+              <select  class="form-control" name="category" id="painting-category" required>
+                <option ng-repeat="category in categoriesArray" value="{{category.category_id}}">{{category.category_name}}</option>
+              </select>
             </div>
             <div class="form-group">
               <label for="painting-price" class="control-label">Price:</label>
