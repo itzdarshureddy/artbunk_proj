@@ -5,12 +5,17 @@ if(!$_SESSION['userId']){
   header("Location: login.php");
 }
 ?>
-<html>
+<html ng-app="homeDashboard">
 <head>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular-resource.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular-route.min.js"></script>
+  <script src="app.js"></script>
+
   <link rel="stylesheet" href="home.css">
 </head>
 <body>
@@ -72,25 +77,18 @@ if(!$_SESSION['userId']){
     </div><!-- /.container-fluid -->
   </nav>
   <div class="container">
-    <div class="row">
+    <div class="row" ng-controller="paintingsController">
 
-                <div class="col-md-3 thumbnail img-responsive">
-                    <a href="#" title="Click to view details">
-                        <img src="showimage.php?id=6"  /></a>
+                <div ng-repeat="painting in paintingsArray" class="col-md-3 thumbnail img-responsive">
+                    <a href="#" title="Image 1">
+                        <img src="showimage.php?id={{painting.painting_id}}"  /></a>
+                        <div class="details">
+                        <h4 class="title">{{painting.painting_name}}</h4>
+                        <span class="price">{{painting.price}}$</span>
+                        <span class="banner">{{painting.painting_status}}</span>
+                      </div>
                 </div>
-                <div class="col-md-3 thumbnail img-responsive">
-                    <a href="#" title="Click to view details">
-                        <img src="showimage.php?id=6"  /></a>
-                </div>
-                <div class="col-md-3 thumbnail img-responsive">
-                    <a href="#" title="Click to view details">
-                        <img src="showimage.php?id=6"  /></a>
-                </div>
-                <div class="col-md-3 thumbnail img-responsive">
-                    <a href="#" title="Click to view details">
-                        <img src="showimage.php?id=6"  /></a>
-                </div>
-            </div>
+    </div>
   </div> 
 
   <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
