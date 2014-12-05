@@ -1,4 +1,7 @@
+<?php
+session_start();
 
+?>
 <html>
 <head>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -33,7 +36,11 @@
         </div>
         <div class='panel-body'>
         <form class="form-signin" method="post"  action="userLogin.php" role="form">
-
+          <?php
+          if($_SESSION['errorLogin']){
+            echo "<div  class='alert alert-danger'>Email or Password is invalid</div>";
+            }
+          ?>
           <label for="inputEmail" class="sr-only">Email address</label>
           <input type="email" id="inputEmail" name ="email" class="form-control" placeholder="Email address" required autofocus>
           <label for="inputPassword" class="sr-only">Password</label>

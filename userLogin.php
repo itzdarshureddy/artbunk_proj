@@ -17,7 +17,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 		$query = "select * from user user where email='".$email."'";
 		$result = mysqli_query($con, $query);
 		$num_rows = mysqli_num_rows($result);
-		echo $num_rows;
 		 if($num_rows==1){
 		 	$row = mysqli_fetch_assoc($result);
 		 	$storedPass = $row['password'];
@@ -27,8 +26,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 				header("Location: home.php");
 
 			} else{
-				echo "Login Failed";
+				$_SESSION["errorLogin"] = "invalidLogin";
+				header("Location: login.php");
+				
 			}
+		 }else{
+		 	$_SESSION["errorLogin"] = "invalidLogin";
+				header("Location: login.php");
 		 }
 	}
 

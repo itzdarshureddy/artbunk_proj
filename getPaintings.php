@@ -11,23 +11,23 @@ if (mysqli_connect_errno()) {
 $query = "";
 if($_GET["searchName"]){
 	$searchString = $_GET["searchName"];
-	$query = "select painting_id,painting_name,category_id,artist_name,seller_id,price,dimensions,painting_status,painting_year,description from painting where painting_name LIKE '%$searchString%'";
+	$query = "select painting_id,painting_name,category_id,artist_name,seller_id,price,dimensions,painting_status,painting_year,description,date_uploaded from painting where painting_name LIKE '%$searchString%'";
 }elseif ($_GET['category']) {
-	$category = $_GET['category'];
-	$query = "select painting_id,painting_name,category_id,artist_name,seller_id,price,dimensions,painting_status,painting_year,description from painting where category_id=$category";
+	$category = $_GET['category'];	
+	$query = "select painting_id,painting_name,category_id,artist_name,seller_id,price,dimensions,painting_status,painting_year,description,date_uploaded from painting where category_id=$category";
 } 
 else{
-$query = "select painting_id,painting_name,category_id,artist_name,seller_id,price,dimensions,painting_status,painting_year,description from painting";
+$query = "select painting_id,painting_name,category_id,artist_name,seller_id,price,dimensions,painting_status,painting_year,description,date_uploaded from painting";
 }
 $results = mysqli_query($con,$query);
+$rows= array();
 $num_rows = mysqli_num_rows($results);
 if($num_rows>0){
-	$rows= array();
 	while($data = mysqli_fetch_array($results,MYSQL_ASSOC)){
 		$rows[]=$data;
 	}
 
-	echo json_encode($rows);
 }
+	echo json_encode($rows);
 
 ?>

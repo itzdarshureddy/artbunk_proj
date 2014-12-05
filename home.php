@@ -51,7 +51,7 @@ if(!$_SESSION['userId']){
           <button type="submit" ng-click="getImagesByName()" class="btn btn-default">Search</button>
         </form>
         <ul class="nav navbar-nav navbar-right">
-          <li><a><i class="fa fa-shopping-cart"></i> Cart</a></li>
+          <li><a ng-click="displayCart()"><i class="fa fa-shopping-cart"></i>({{currentCart.length}}) Cart </a></li>
           <li><a data-toggle="modal" data-target="#uploadModal"><i class="fa fa-upload"></i> Upload</a></li>
           <li><a href="logout.php"><i class="fa fa-sign-out"></i> Sign out</a></li>
 
@@ -60,19 +60,19 @@ if(!$_SESSION['userId']){
     </div><!-- /.container-fluid -->
   </nav>
   <div class="container">
-    <div class="row" ng-show="!enlargeOnePainting">
+    <div class="row" ng-show="!enlargeOnePainting && !showingCart">
 
-                <div ng-repeat="painting in paintingsArray" class="col-md-3 thumbnail img-responsive">
-                    <a ng-click="selectPainting(painting)" title="Image 1">
-                        <img ng-src="showimage.php?id={{painting.painting_id}}"  /></a>
-                        <div class="details">
-                        <h4 class="title">{{painting.painting_name}}</h4>
-                        Price: <span class="price">{{painting.price}} $</span>
-                        <span class="banner">{{painting.painting_status}}</span>
-                      </div>
-                </div>
-    </div>
-    <div class="row" ng-show="enlargeOnePainting">
+      <div ng-repeat="painting in paintingsArray" class="col-md-3 thumbnail img-responsive">
+        <a ng-click="selectPainting(painting)" title="Click to Enlarge">
+          <img ng-src="showimage.php?id={{painting.painting_id}}"  /></a>
+          <div class="details">
+            <h4 class="title">{{painting.painting_name}}</h4>
+            Price: <span class="price">{{painting.price | currency}}</span>
+            <span class="banner">{{painting.painting_status}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row" ng-show="enlargeOnePainting">
         <div class="col-md-12 thumbnail img-responsive">
           <img class="col-md-6"  ng-src="showimage.php?id={{selectedPainting.painting_id}}"  />
           <div class="col-md-6 details">
@@ -82,70 +82,123 @@ if(!$_SESSION['userId']){
             <p><b>Painting Year: </b>{{selectedPainting.painting_year}}</p>
             <p><b>Artist: </b>{{selectedPainting.artist_name}}</p>
             <p><b>Dimensions: </b>{{selectedPainting.dimensions}} inches</p>
+            <p><b>Date Uploaded: </b>{{selectedPainting.date_uploaded}}</p>
+            <p><b>Price: </b>{{selectedPainting.price | currency}}</p>
             <p><b>Status: </b><span class="banner"> {{selectedPainting.painting_status}}</sapn></p>
-            <button class="btn btn-primary" ng-disabled="selectedPainting.painting_status!='AVAILABLE'"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+            <button class="btn btn-primary" ng-click="addToCart()" ng-disabled="selectedPainting.painting_status!='AVAILABLE' || selectedPainting.addedTocart"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
           </div>
         </div>
 
-    </div>
-  </div> 
-
-  <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-          <h4 class="modal-title" id="uploadModalLabel">Enter Painting Details</h4>
+      </div>
+      <div class="row cartList col-md-6" ng-show="showingCart">
+        <h3 class="col-md-offset-3">Your Current Cart has {{currentCart.length}} items</h3>
+        <div ng-repeat="item in currentCart" class="col-md-12 col-md-offset-3 thumbnail" ng-class="{sold:item.painting_status=='SOLD'}">
+          <img class="col-md-3"  ng-src="showimage.php?id={{item.painting_id}}"  />
+          <div class="details"
+            <h3>{{item.painting_name}}</h3>
+            <p><b>Artist: </b>{{item.artist_name}}</p>
+            <p><b>Price: </b>{{item.price | currency}}</p>
+            <p><b>Status: </b><span class="banner"> {{item.painting_status}}</sapn></p>
+            <button class="btn btn-danger" ng-click="removeFromCart(item.painting_id)">Remove from Cart</button>
+          </div>
         </div>
-        <form role="form" method="post" action="uploadPainting.php" enctype="multipart/form-data">
-          <div class="modal-body">
+        <p class="col-md-offset-3"><b>Total Cart Value: {{totalCart| currency}}</b></p>
+        <div ng-show="!cleanCart" class="alert alert-danger col-md-offset-3">Remove already sold items from cart to checkout</div>
+        <button class="btn btn-checkout col-md-offset-3" data-toggle="modal" data-target="#checkoutModal" ng-disabled="currentCart.length == 0 || !cleanCart"> Proceed to Checkout</button>
 
-            <div class="form-group">
-              <label for="painting-name" class="control-label">Painting Name:</label>
-              <input type="text" name="name" class="form-control" id="painting-name" required>
-            </div>
-            <div class="form-group">
-              <label for="description-text" class="control-label">Description:</label>
-              <textarea class="form-control" name="description" id="description-text"></textarea>
-            </div>
-            <div class="form-group">
-              <label for="painting-artist" class="control-label">Artist:</label>
-              <input type="text" class="form-control" name="artist" id="painting-artist">
-            </div>
-            <div class="form-group">
-              <label for="painting-category" class="control-label">Category:</label>
-              <select  class="form-control" name="category" id="painting-category" required>
-                <option ng-repeat="category in categoriesArray" value="{{category.category_id}}">{{category.category_name}}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="painting-price" class="control-label">Price:</label>
-              <input type="number" class="form-control" name="price" id="painting-price" required>
-            </div>
-            <div class="form-group">
-              <label for="painting-year" class="control-label">Painting Year:</label>
-              <input type="number" class="form-control" name="year" id="painting-year">
-            </div>
-            <div class="form-group form-inline">
-              <label for="painting-width" class="control-label">Width:</label>
-              <input type="number" class="form-control" name="width" id="painting-width" placeholder="0 inches" required>
-              <label for="painting-height" class="control-label">Height:</label>
-              <input type="number" class="form-control" name="height" id="painting-height" placeholder="0 inches" required>
-            </div>
+      </div>
+     
+    </div> 
 
-            <input type="file" name="image" id="painting-img" required>
-            
-
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="uploadModalLabel">Enter Painting Details</h4>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Upload Painting</button>
+          <form role="form" method="post" action="uploadPainting.php" enctype="multipart/form-data">
+            <div class="modal-body">
 
-          </div>
-        </form>
+              <div class="form-group">
+                <label for="painting-name" class="control-label">Painting Name:</label>
+                <input type="text" name="name" class="form-control" id="painting-name" required>
+              </div>
+              <div class="form-group">
+                <label for="description-text" class="control-label">Description:</label>
+                <textarea class="form-control" name="description" id="description-text"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="painting-artist" class="control-label">Artist:</label>
+                <input type="text" class="form-control" name="artist" id="painting-artist">
+              </div>
+              <div class="form-group">
+                <label for="painting-category" class="control-label">Category:</label>
+                <select  class="form-control" name="category" id="painting-category" required>
+                  <option ng-repeat="category in categoriesArray" value="{{category.category_id}}">{{category.category_name}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="painting-price" class="control-label">Price:</label>
+                <input type="number" class="form-control" name="price" id="painting-price" required>
+              </div>
+              <div class="form-group">
+                <label for="painting-year" class="control-label">Painting Year:</label>
+                <input type="number" class="form-control" name="year" id="painting-year">
+              </div>
+              <div class="form-group form-inline">
+                <label for="painting-width" class="control-label">Width:</label>
+                <input type="number" class="form-control" name="width" id="painting-width" placeholder="0 inches" required>
+                <label for="painting-height" class="control-label">Height:</label>
+                <input type="number" class="form-control" name="height" id="painting-height" placeholder="0 inches" required>
+              </div>
+
+              <input type="file" name="image" id="painting-img" required>
+
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Upload Painting</button>
+
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
-</body>
-</html>
+
+    <div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="checkoutModalLabel">Checkout current cart</h4>
+          </div>
+          <form role="form" method="post" action="checkout.php" >
+            <div class="modal-body">
+              <p>Total cost to be paid on delivery: {{totalCart| currency}}</p>
+              
+              <div class="form-group">
+                <label for="shipping-address" class="control-label">Shipping Address:</label>
+                <textarea class="form-control" name="shippingAddress" id="description-address" required placeholder="Address"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="phone" class="control-label">phone:</label>
+                <input type="number" class="form-control" name="phone" id="phone" required>
+              </div>
+              <input type="hidden" name="total" ng-value="totalCart">
+
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Place Order</button>
+
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+  </html>
 

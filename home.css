@@ -41,3 +41,13 @@
     padding: 1px 4px;
     font-weight: 700;
   }
+
+  .btn-checkout
+  {
+    background:linear-gradient(to bottom,#f7dfa5,#f0c14b);
+  }
+
+  .sold{
+    border: red 4px solid;
+  }
+
