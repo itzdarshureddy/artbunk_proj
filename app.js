@@ -21,6 +21,16 @@ var app=angular.module('homeDashboard',['ngResource','ngRoute']);
       });
     }
   ]);
+  app.factory('HistoryFactory', ['$resource',
+    function($resource) {
+      return $resource('/history.php', {}, {
+        query: {
+          method: 'GET',
+          isArray: true
+        }
+      });
+    }
+  ]);
   app.factory('CartFactory', ['$resource',
     function($resource) {
       return $resource('/cart.php', {}, {
@@ -35,14 +45,17 @@ var app=angular.module('homeDashboard',['ngResource','ngRoute']);
     }
   ]);
 
-  app.controller('paintingsController',function($scope, CategoryFactory, CartFactory, PaintingsFactory){
+  app.controller('paintingsController',function($scope, CategoryFactory, HistoryFactory, CartFactory, PaintingsFactory){
     $scope.paintingsArray = [];
     $scope.searchName = "";
     $scope.categoriesArray = [];
     $scope.currentCart = [];
-    $scope.showingCart = false;
+    $scope.showingCart = false; 
     $scope.totalCart = 0;
     $scope.cleanCart =true;
+    $scope.checkoutHitory = [];
+    $scope.selectedCart = [];
+    $scope.showingHistory = false;
 
     PaintingsFactory.query().$promise.then(function(data){
       $scope.paintingsArray = data;
@@ -51,7 +64,12 @@ var app=angular.module('homeDashboard',['ngResource','ngRoute']);
     CategoryFactory.query().$promise.then(function(data){
       $scope.categoriesArray = data;
     });
-
+    HistoryFactory.query().$promise.then(function(data){
+      $scope.checkoutHitory = data;
+    });
+    $scope.showHistory = function(){
+      $scope.showingHistory = true;
+    }
     $scope.getImagesByName = function(){
       PaintingsFactory.query({searchName:$scope.searchName}).$promise.then(function(data){
       $scope.paintingsArray = data;
@@ -75,6 +93,14 @@ var app=angular.module('homeDashboard',['ngResource','ngRoute']);
     $scope.selectedPainting = {};
 
     $scope.enlargeOnePainting = false;
+
+    $scope.getCart = function(cartId){
+
+      CartFactory.query({cart_id:cartId}).$promise.then(function(data){
+        $scope.selectedCart = data;
+      });
+
+    };
 
     $scope.selectPainting = function(painting){
       $scope.selectedPainting = painting;

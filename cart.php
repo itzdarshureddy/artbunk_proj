@@ -10,7 +10,24 @@ if (mysqli_connect_errno()) {
 }
 $userId = $_SESSION['userId'];
 
-if($_GET['method']=='add' && $_GET['painting_id']){
+if($_GET['cart_id']){
+	$getCartId = $_GET['cart_id'];
+	$query = "select painting_id,painting_name,category_id,artist_name,seller_id,price,dimensions,painting_status,painting_year,description,date_uploaded from painting where painting_id in (select painting_id from cart_list where cart_list.cart_id=$getCartId)";
+
+	$results = mysqli_query($con,$query);
+$rows= array();
+$num_rows = mysqli_num_rows($results);
+if($num_rows>0){
+	while($data = mysqli_fetch_array($results,MYSQL_ASSOC)){
+		$rows[]=$data;
+	}
+
+}
+	echo json_encode($rows);
+
+}
+
+elseif($_GET['method']=='add' && $_GET['painting_id']){
 	$paintingId = intval($_GET['painting_id']);
 	$query = "select cart_id from cart where user_id=$userId and is_processed=false";
 	$cart = mysqli_query($con,$query);

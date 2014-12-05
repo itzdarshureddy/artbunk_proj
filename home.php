@@ -91,6 +91,7 @@ if(!$_SESSION['userId']){
 
       </div>
       <div class="row cartList col-md-6" ng-show="showingCart">
+        <div ng-show="!showingHistory">
         <h3 class="col-md-offset-3">Your Current Cart has {{currentCart.length}} items</h3>
         <div ng-repeat="item in currentCart" class="col-md-12 col-md-offset-3 thumbnail" ng-class="{sold:item.painting_status=='SOLD'}">
           <img class="col-md-3"  ng-src="showimage.php?id={{item.painting_id}}"  />
@@ -105,8 +106,14 @@ if(!$_SESSION['userId']){
         <p class="col-md-offset-3"><b>Total Cart Value: {{totalCart| currency}}</b></p>
         <div ng-show="!cleanCart" class="alert alert-danger col-md-offset-3">Remove already sold items from cart to checkout</div>
         <button class="btn btn-checkout col-md-offset-3" data-toggle="modal" data-target="#checkoutModal" ng-disabled="currentCart.length == 0 || !cleanCart"> Proceed to Checkout</button>
-
+        <a href="#" ng-click="showHistory()">View your history</a>
       </div>
+
+        <div ng-show="showingHistory" class="col-md-12 col-md-offset-6">
+          <div ng-repeat="cart in checkoutHitory"  class="alert alert-info" role="alert">You bought items worth {{cart.total|currency}} on {{cart.checkout_date}}<button data-toggle="modal" data-target="#cartModal" ng-click="getCart(cart.cart_id)" class="btn btn-warning" style="float:right"> View Cart</button></div>
+        </div>
+      </div>
+      
      
     </div> 
 
@@ -196,6 +203,33 @@ if(!$_SESSION['userId']){
 
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="cartModalLabel">Cart items</h4>
+          </div>
+            <div class="modal-body">
+              <div ng-repeat="item in selectedCart" class="col-md-12 thumbnail" >
+          <img class="col-md-3"  ng-src="showimage.php?id={{item.painting_id}}"  />
+          <div class="details"
+            <h3>{{item.painting_name}}</h3>
+            <p><b>Artist: </b>{{item.artist_name}}</p>
+            <p><b>Price: </b>{{item.price | currency}}</p>
+            <p><b>Status: </b><span class="banner"> {{item.painting_status}}</sapn></p>
+          </div>
+        </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          
         </div>
       </div>
     </div>

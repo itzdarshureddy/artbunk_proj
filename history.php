@@ -21,23 +21,4 @@ if($num_rows>0){
 }
 	echo json_encode($checkoutList);
 
-
-	// $query = " select * from checkout where user_id in (select cart_id from checkout where user_id=$userId) order_by ";
-	// $cart = mysqli_query($con,$query);
- // 	$num_carts = mysqli_num_rows($cart);
-	// if($num_carts==1){
-	// 	$row = mysqli_fetch_assoc($cart);
-	// 	$cartId = intval($row['cart_id']);
-	// 	$upadteQuery = "update  cart set is_processed=true where cart_id=$cartId";
-	// 	$retval = mysqli_query($con,$upadteQuery);
-	// 	if($retval){
-	// 		$checkoutQuery = "insert into checkout values($userId,$cartId,$cartTotal,now(),'$address',$phoneNumber)";
-	// 		$checkout = mysqli_query($con,$checkoutQuery);
-	// 		$insertquery = "insert into cart(user_id,is_processed) values ($userId,false)";
-	// 		$retval = mysqli_query($con,$insertquery);
-	// 		header("Location: home.php");
-
-	// 	}
-	// }
-
 ?>
