@@ -56,6 +56,7 @@ var app=angular.module('homeDashboard',['ngResource','ngRoute']);
     $scope.checkoutHitory = [];
     $scope.selectedCart = [];
     $scope.showingHistory = false;
+    $scope.noCheckoutHistory = true;
 
     PaintingsFactory.query().$promise.then(function(data){
       $scope.paintingsArray = data;
@@ -66,9 +67,15 @@ var app=angular.module('homeDashboard',['ngResource','ngRoute']);
     });
     HistoryFactory.query().$promise.then(function(data){
       $scope.checkoutHitory = data;
+      if($scope.checkoutHitory && $scope.checkoutHitory.length>0){
+        $scope.noCheckoutHistory = false;
+      }
     });
     $scope.showHistory = function(){
       $scope.showingHistory = true;
+    }
+    $scope.hideHistory = function(){
+      $scope.showingHistory = false;
     }
     $scope.getImagesByName = function(){
       PaintingsFactory.query({searchName:$scope.searchName}).$promise.then(function(data){
@@ -89,6 +96,7 @@ var app=angular.module('homeDashboard',['ngResource','ngRoute']);
         $scope.showingCart = true;
         $scope.enlargeOnePainting = false;
     }
+
 
     $scope.selectedPainting = {};
 
@@ -120,6 +128,15 @@ var app=angular.module('homeDashboard',['ngResource','ngRoute']);
         $scope.showingCart =true;
         $scope.enlargeOnePainting=false;
       });
+    }
+
+    $scope.getImagesByPrice = function(range){
+      PaintingsFactory.query({priceRange:range}).$promise.then(function(data){
+      $scope.paintingsArray = data;
+      $scope.enlargeOnePainting = false;
+      $scope.showingCart = false;
+    });
+
     }
 
     $scope.removeFromCart = function(painting_id){

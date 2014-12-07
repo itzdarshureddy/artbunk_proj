@@ -2,12 +2,17 @@
 session_start();
 
 ?>
-<html>
+<html ng-app="loginDashboard">
 <head>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="login.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular-resource.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular-route.min.js"></script>
+  <script src="login.js"></script>
+
   
 </head>
 <body>
@@ -45,11 +50,7 @@ session_start();
           <input type="email" id="inputEmail" name ="email" class="form-control" placeholder="Email address" required autofocus>
           <label for="inputPassword" class="sr-only">Password</label>
           <input type="password" id="inputPassword" name= "passwd" class="form-control" placeholder="Password" required>
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" value="remember-me"> Remember me
-            </label>
-          </div>
+          
           <button class="btn btn-lg btn-info btn-block" type="submit">Sign in</button>
           <div class="form-group">
             <div class="col-md-12 control">
@@ -73,7 +74,7 @@ session_start();
           <div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" href="#" onclick="$('#signupbox').hide(); $('#loginbox').show()">Sign In</a></div>
         </div>  
         <div class="panel-body" >
-          <form id="signupform" class="form-horizontal" action="register.php" method="post" role="form">
+          <form id="signupform" name="signupForm" class="form-horizontal" action="register.php" method="post" role="form" ng-controller="passwordController">
 
             <div id="signupalert" style="display:none" class="alert alert-danger">
               <p>Error:</p>
@@ -85,7 +86,12 @@ session_start();
             <div class="form-group">
               <label for="email" class="col-md-3 control-label">Email</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="email" placeholder="Email Address" required autofocus>
+                <input type="text" class="form-control"   name="email" ng-model="emailEntered" ng-change="checkEmail()" placeholder="Email Address" required autofocus>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-12">
+              <div ng-show="showEmailError" class="alert alert-danger col-md-offset-3">Email already registered.</div>
               </div>
             </div>
 
@@ -104,21 +110,27 @@ session_start();
             <div class="form-group">
               <label for="password" class="col-md-3 control-label">Password</label>
               <div class="col-md-9">
-                <input type="password" class="form-control" name="passwd" placeholder="Password" required>
+                <input type="password" class="form-control" ng-model="password" ng-change="showPassPowrdLength()" name="passwd" placeholder="Password" required>
+              </div>
+
+            </div>
+            <div class="form-group">
+              <div class="col-md-12">
+              <div ng-show="showLengthError" class="alert alert-danger col-md-offset-3">Password should contain at least 8 characters, 1 number,1 upper and 1 lowercase alphabet</div>
               </div>
             </div>
 
             <div class="form-group">
               <label for="address" class="col-md-3 control-label">Address</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="address" placeholder="Address" required>
+                <input type="text" class="form-control" name="address" placeholder="Address">
               </div>
             </div>
 
             <div class="form-group">
               <!-- Button -->                                        
               <div class="col-md-offset-3 col-md-9">
-                <button id="btn-signup" type="submit" class="btn btn-info"><i class="icon-hand-right"></i> &nbsp Sign Up</button>
+                <button id="btn-signup" ng-disabled="signupForm.$invalid || showLengthError || form.email.$error.email" type="submit" class="btn btn-info"><i class="icon-hand-right"></i> &nbsp Sign Up</button>
               </div>
             </div>
 

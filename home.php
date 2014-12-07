@@ -43,6 +43,15 @@ if(!$_SESSION['userId']){
               
             </ul>
           </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">  Price <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li ng-click="getImagesByPrice(1)"><a href="#" > Below $50</a></li>
+              <li ng-click="getImagesByPrice(2)"><a href="#" > $50 - $100</a></li>
+              <li ng-click="getImagesByPrice(3)"><a href="#" > $100 - $500</a></li>
+              <li ng-click="getImagesByPrice(4)"><a href="#" > $500 &amp; Above</a></li>
+            </ul>
+          </li>
         </ul>
         <form class="navbar-form navbar-left" role="search">
           <div class="form-group">
@@ -62,7 +71,7 @@ if(!$_SESSION['userId']){
   <div class="container">
     <div class="row" ng-show="!enlargeOnePainting && !showingCart">
 
-      <div ng-repeat="painting in paintingsArray" class="col-md-3 thumbnail img-responsive">
+      <div ng-repeat="painting in paintingsArray" class="col-md-3 thumbnail img-responsive" style="min-height:350px">
         <a ng-click="selectPainting(painting)" title="Click to Enlarge">
           <img ng-src="showimage.php?id={{painting.painting_id}}"  /></a>
           <div class="details">
@@ -110,7 +119,9 @@ if(!$_SESSION['userId']){
       </div>
 
         <div ng-show="showingHistory" class="col-md-12 col-md-offset-6">
+          <div ng-hide="!noCheckoutHistory" class="alert alert-danger">You have no purchase History</div>
           <div ng-repeat="cart in checkoutHitory"  class="alert alert-info" role="alert">You bought items worth {{cart.total|currency}} on {{cart.checkout_date}}<button data-toggle="modal" data-target="#cartModal" ng-click="getCart(cart.cart_id)" class="btn btn-warning" style="float:right"> View Cart</button></div>
+          <a href="#" ng-click="hideHistory()">Go Back To Current Cart</a>
         </div>
       </div>
       
